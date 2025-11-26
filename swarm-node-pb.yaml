@@ -1,0 +1,10 @@
+---
+- name: Docker Swarm Nodes
+  hosts: swarm_nodes
+  become: true
+
+  vars_files:
+    - docker_users.yaml
+
+  roles:
+    - swarm-node

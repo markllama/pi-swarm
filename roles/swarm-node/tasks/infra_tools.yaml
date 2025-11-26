@@ -1,0 +1,12 @@
+- name: Install Provisioning / Sysamin tools
+  package:
+    name:
+      # Editors
+      - nano
+      - vim
+      
+      # Network tools
+      - iputils-ping
+
+    state:
+      present

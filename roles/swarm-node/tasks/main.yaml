@@ -1,0 +1,18 @@
+---
+- name: Install infrastructure management tools
+  import_tasks:
+    file: infra_tools.yaml
+
+- name: Create Docker swarm host users
+  user:
+    name: swarm
+    shell: /bin/bash
+    comment: docker swarm cluster/app user
+    create_home: true
+    state: present
+
+- name: Install Docker packages and services
+  import_tasks:
+    file: docker.yaml
+
+    

@@ -1,0 +1,46 @@
+- name: Make sure keys have a place to go
+  file:
+    dest: /etc/apt/keyfiles
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+  tags: docker
+
+- name: Enable Docker package repo
+  deb822_repository:
+    name: docker
+    types: deb
+    architectures: '{{ ansible_architecture | replace("aarch64", "arm64") }}'
+    signed_by: https://download.docker.com/linux/ubuntu/gpg
+    uris: https://download.docker.com/linux/ubuntu
+    suites: "{{ ansible_distribution_release }}"
+    components: stable
+  tags: docker
+
+- name: Install docker packages
+  package:
+    name:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+      - docker-compose-v2
+      # for earlier systems perhaps - MAL 20251126
+      #- docker-compose
+      #- dock-compose-plugin
+    state: present
+  tags: docker
+
+- name: Enable docker service
+  service:
+    name: docker
+    state: started
+  tags: docker
+
+- name: Add users to docker group
+  user:
+    name: "{{ item }}"
+    groups: docker
+    append: yes
+  loop: "{{ docker.users }}"
+  tags: docker
