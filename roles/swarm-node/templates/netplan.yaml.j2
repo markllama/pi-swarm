@@ -1,0 +1,24 @@
+---
+network:
+  version: 2
+  ethernets:
+    renderer: networkd
+{% for interface in interfaces %}    
+    {{ interface.name }}:
+      addresses: {{ interface.addresses }}
+      gateway4: {{ interface.gateway4 }}
+      nameservers:
+        addresses: ["$dns_address"]
+      dhcp4: false
+      dhcp6: yes
+      optional: true
+      accept-ra: yes
+{% endfor %}
+
+#    enp2s0:
+#      addresses: ["100.0.0.1/24", "2001:db8::1/64"]
+#      dhcp4: no
+#      dhcp6: no
+#      nameservers:
+#        addresses: ["$gateway"]
+#      accept-ra: yes

@@ -1,0 +1,13 @@
+---
+# pi5-3 definitions
+#
+networks:
+  front:
+    name: eth0
+    mac: 2c:cf:67:8b:32:ce
+  back:
+    name: enxa0cec8fec37c
+    mac: a0:ce:c8:fe:c3:7c
+  wireless:
+    name: wlan0
+    mac: 2c:cf:67:8b:32:d0

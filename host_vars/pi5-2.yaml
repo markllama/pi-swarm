@@ -1,0 +1,13 @@
+---
+# pi5-2 definitions
+#
+networks:
+  front:
+    name: eth0
+    mac: 2c:cf:67:8b:53:e7
+  back:
+    name: enxa0cec8fff2c9
+    mac: a0:ce:c8:ff:f2:c9
+  wireless:
+    name: wlan0
+    mac: 2c:cf:67:8b:53:e8

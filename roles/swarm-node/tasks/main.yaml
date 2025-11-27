@@ -1,4 +1,8 @@
 ---
+- name: Prepare node back-end networks
+  import_tasks:
+    file: node_networks.yaml
+
 - name: Install infrastructure management tools
   import_tasks:
     file: infra_tools.yaml
