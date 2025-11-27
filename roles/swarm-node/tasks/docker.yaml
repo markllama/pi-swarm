@@ -28,6 +28,7 @@
       # for earlier systems perhaps - MAL 20251126
       #- docker-compose
       #- dock-compose-plugin
+      - python3-docker
     state: present
   tags: docker
 

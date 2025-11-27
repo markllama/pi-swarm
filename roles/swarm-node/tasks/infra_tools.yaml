@@ -7,6 +7,6 @@
       
       # Network tools
       - iputils-ping
-
+      
     state:
       present
