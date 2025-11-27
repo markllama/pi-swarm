@@ -37,3 +37,8 @@
         network: {config: disabled }
   notify: Apply Netplan
   tags: network
+
+- name: Remove cloudflare netplan file
+  file:
+    path: /etc/netplan/50-cloud-init.yaml
+    state: absent

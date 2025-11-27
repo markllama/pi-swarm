@@ -4,7 +4,7 @@ swarm:
     front:
       optional: "false"
       base: 172.17.0.0
-      cidr_mask: 24
+      cidr_mask: 16
       gateway: 172.17.0.1
       nameserver: 172.17.0.1
       bastion: 172.17.0.2
@@ -14,7 +14,7 @@ swarm:
     back:
       optional: "true"
       base: 172.16.0.0
-      cidr_mask: 24
+      cidr_mask: 16
       #gateway: 172.16.0.1
       nameserver: 172.16.0.1
       bastion: 172.16.0.2

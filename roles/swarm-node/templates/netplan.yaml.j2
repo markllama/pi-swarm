@@ -5,7 +5,7 @@ network:
     renderer: networkd
     {{ name }}:
       addresses:
-        - {{ (network.base ~ '/' ~ network.cidr_mask) | ansible.utils.next_nth_usable(network.node_range.min + swarm_node.number) }}/{{ network.cidr_mask }}
+        - {{ (network.base ~ '/' ~ network.cidr_mask) | ansible.utils.next_nth_usable(network.node_range.min + swarm_node.number - 1) }}/{{ network.cidr_mask }}
       {% if network.gateway is defined -%}
       routes:
         - to: default
