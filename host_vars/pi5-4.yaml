@@ -1,13 +1,17 @@
 ---
 # pi5-1 definitions
 #
-networks:
-  front:
-    name: eth0
-    mac: 2c:cf:67:c6:78:da
-  back:
-    name: enx00e04c68ba0a
-    mac: 00:e0:4c:68:ba:0a
-  wireless:
-    name: wlan0
-    mac: 2c:cf:67:c6:78:db
+swarm_node:
+  name: pi5-4
+  number: 4
+  
+  networks:
+    front:
+      name: eth0
+      mac: 2c:cf:67:c6:78:da
+    back:
+      name: enx00e04c68ba0a
+      mac: 00:e0:4c:68:ba:0a
+    wireless:
+      name: wlan0
+      mac: 2c:cf:67:c6:78:db

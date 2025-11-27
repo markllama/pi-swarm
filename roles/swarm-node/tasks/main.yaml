@@ -2,10 +2,12 @@
 - name: Prepare node back-end networks
   import_tasks:
     file: node_networks.yaml
+  tags: network
 
 - name: Install infrastructure management tools
   import_tasks:
     file: infra_tools.yaml
+  tags: infra
 
 - name: Create Docker swarm host users
   user:
@@ -14,9 +16,9 @@
     comment: docker swarm cluster/app user
     create_home: true
     state: present
-
+  
 - name: Install Docker packages and services
   import_tasks:
     file: docker.yaml
-
+  tags: docker
     

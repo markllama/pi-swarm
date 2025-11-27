@@ -1,3 +1,39 @@
----
-- name: Management Interface - Static
-  
+---  
+- name: Configure front end network
+  template:
+    src: netplan.yaml.j2
+    dest: /etc/netplan/10-front.yaml
+    owner: root
+    group: root
+    mode: 0600
+  vars:
+    name: "{{ swarm_node.networks.front.name }}"
+    network: "{{ swarm.networks.front }}"
+  notify: Apply Netplan
+  tags: network
+
+- name: Configure back end network
+  template:
+    src: netplan.yaml.j2
+    dest: /etc/netplan/20-back.yaml
+    owner: root
+    group: root
+    mode: 0600
+  vars:
+    name: "{{ swarm_node.networks.back.name }}"
+    network: "{{ swarm.networks.back }}"
+  notify: Apply Netplan
+  tags: network
+
+# - name: Configure sensor network
+#   template:
+#     src: netplan-template.j2
+#     dest: /etc/netplan/00-front.yaml
+
+- name: Disable cloud-init network configuration
+  copy:
+    dest: /etc/cloud/cloud.cfg.d/99-disable-network-config.cfg
+    content: |
+        network: {config: disabled }
+  notify: Apply Netplan
+  tags: network

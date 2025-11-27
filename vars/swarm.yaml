@@ -2,23 +2,27 @@
 swarm:
   networks:
     front:
-      cidr: 172.17.0.0/24
+      optional: "false"
+      base: 172.17.0.0
+      cidr_mask: 24
       gateway: 172.17.0.1
       nameserver: 172.17.0.1
       bastion: 172.17.0.2
       node_range:
         min: 11
         max: 19
-      back:
-        cidr: 172.16.0.0/24
-        gateway: 172.16.0.1
-        nameserver: 172.16.0.1
-        bastion: 172.16.0.2
-        node_range:
-          min: 11
-          max: 19
-      sensor:
-        cidr: 172.18.0.0/24
-        node_range:
-          min: 11
-          max: 200
+    back:
+      optional: "true"
+      base: 172.16.0.0
+      cidr_mask: 24
+      #gateway: 172.16.0.1
+      nameserver: 172.16.0.1
+      bastion: 172.16.0.2
+      node_range:
+        min: 11
+        max: 19
+    sensor:
+      base: N.N.N.N/M
+      node_range:
+        min: 11
+        max: 200

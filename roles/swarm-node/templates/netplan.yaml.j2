@@ -3,22 +3,18 @@ network:
   version: 2
   ethernets:
     renderer: networkd
-{% for interface in interfaces %}    
-    {{ interface.name }}:
-      addresses: {{ interface.addresses }}
-      gateway4: {{ interface.gateway4 }}
+    {{ name }}:
+      addresses:
+        - {{ (network.base ~ '/' ~ network.cidr_mask) | ansible.utils.next_nth_usable(network.node_range.min + swarm_node.number) }}/{{ network.cidr_mask }}
+      {% if network.gateway is defined -%}
+      routes:
+        - to: default
+          via: {{ network.gateway }}
+      {% endif -%}
       nameservers:
-        addresses: ["$dns_address"]
+        addresses:
+          - {{ network.nameserver }}
       dhcp4: false
       dhcp6: yes
-      optional: true
+      optional: {{ network.optional }}
       accept-ra: yes
-{% endfor %}
-
-#    enp2s0:
-#      addresses: ["100.0.0.1/24", "2001:db8::1/64"]
-#      dhcp4: no
-#      dhcp6: no
-#      nameservers:
-#        addresses: ["$gateway"]
-#      accept-ra: yes

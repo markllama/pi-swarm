@@ -5,6 +5,7 @@
 
   vars_files:
     - docker_users.yaml
+    - swarm.yaml
 
   roles:
     - swarm-node
