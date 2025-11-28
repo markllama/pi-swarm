@@ -2,6 +2,7 @@
 #
 # Tasks to install and configure a Docker Swarm on a set of nodes
 #
+- name: 
 - name: Define Manager Address
   set_fact:
     swarm_advertise_addr: "{{ (network.base ~ '/' ~ network.cidr_mask) | ansible.utils.next_nth_usable(network.node_range.min + swarm_node.number - 1) }}"
