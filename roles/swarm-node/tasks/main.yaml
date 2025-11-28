@@ -21,4 +21,9 @@
   import_tasks:
     file: docker.yaml
   tags: docker
+
+- name: Create Docker Swarm
+  import_tasks:
+    file: swarm.yaml
+  tags: swarm
     
