@@ -2,61 +2,71 @@
 #
 # Tasks to install and configure a Docker Swarm on a set of nodes
 #
-- name: Define Manager Address
-  set_fact:
-    swarm_advertise_addr: "{{ (network.base ~ '/' ~ network.cidr_mask) | ansible.utils.next_nth_usable(network.node_range.min + swarm_node.number - 1) }}"
-    cacheable: true
-  vars:
-    network: "{{ swarm.networks.back }}"
+- name: Docker Swarm Manager Setup
+  block:
+    - name: Define Manager Address
+      set_fact:
+        swarm_advertise_addr: "{{ (network.base ~ '/' ~ network.cidr_mask) | ansible.utils.next_nth_usable(network.node_range.min + swarm_node.number - 1) }}"
+        cacheable: true
+      vars:
+        network: "{{ swarm.networks.back }}"
+      run_once: true
+      tags: swarm
+    
+    - name: Install Docker Swarm on master
+      docker_swarm:
+        # back end address is 
+        advertise_addr: "{{ swarm_advertise_addr }}"
+        state: present
+      vars:
+        network: "{{swarm.networks.back }}"
+      run_once: true
+      register: swarm_status
+      tags: swarm
+       
+    #- name: report swarm configuration parameters
+    #  debug:
+    #    msg: |
+    #      Advertise Address: {{swarm_advertise_addr }}
+    #      Join Keys:
+    #        manager: {{ swarm_status.swarm_facts.JoinTokens.Manager }}
+    #        worker: {{ swarm_status.swarm_facts.JoinTokens.Worker }}
+    #  tags: swarm
+    
+    - name: Create Docker network overlay
+      docker_network:
+        name: factorian
+        driver: overlay
+      run_once: true
+      tags: swarm
+    
+    - name: Set node label
+      docker_node:
+        hostname: "{{ ansible_hostname }}"
+        labels:
+          num: manager
+        labels_state: merge
+      run_once: true
+      tags: swarm
+    
+    - name: Register manager node
+      docker_swarm:
+        state: join
+        advertise_addr: "{{ swarm_advertise_addr }}"    
+        remote_addrs  : "{{ swarm_advertise_addr }}"
+        join_token: "{{ swarm_status.swarm_facts.JoinTokens.Manager }}"
+      run_once: true
+      tags: swarm
+  
   when: swarm_node.manager is defined and swarm_node.manager is true
-  run_once: true
   tags: swarm
 
-- name: Install Docker Swarm on master
-  docker_swarm:
-    # back end address is 
-    advertise_addr: "{{ swarm_advertise_addr }}"
-    state: present
-  vars:
-    network: "{{swarm.networks.back }}"
-  when: swarm_node.manager is defined and swarm_node.manager is true
-  run_once: true
-  register: swarm_status
-  tags: swarm
-   
-#- name: report swarm configuration parameters
-#  debug:
-#    msg: |
-#      Advertise Address: {{swarm_advertise_addr }}
-#      Join Keys:
-#        manager: {{ swarm_status.swarm_facts.JoinTokens.Manager }}
-#        worker: {{ swarm_status.swarm_facts.JoinTokens.Worker }}
-#  tags: swarm
-
-- name: Create Docker network overlay
-  docker_network:
-    name: factorian
-    driver: overlay
-  run_once: true
-  when: swarm_node.manager is defined and swarm_node.manager is true
-  tags: swarm
-
-- name: Set node label
-  docker_node:
-    hostname: "{{ ansible_hostname }}"
-    labels:
-      num: manager
-    labels_state: merge
-  run_once: true
-  when: swarm_node.manager is defined and swarm_node.manager is true
-  tags: swarm
-
-- name: Register manager node
+- name: Register worker nodes
   docker_swarm:
     state: join
     advertise_addr: "{{ swarm_advertise_addr }}"    
     remote_addrs  : "{{ swarm_advertise_addr }}"
-    join_token: "{{ swarm_status.swarm_facts.JoinTokens.Manager }}"
-  run_once: true
-  when: swarm_node.manager is defined and swarm_node.manager is true
+    join_token: "{{ swarm_status.swarm_facts.JoinTokens.Worker }}"
+  when: swarm_node.manager is not defined or swarm_node.manager is not true
   tags: swarm
+  
