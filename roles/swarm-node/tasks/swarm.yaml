@@ -69,4 +69,3 @@
     join_token: "{{ swarm_status.swarm_facts.JoinTokens.Worker }}"
   when: swarm_node.manager is not defined or swarm_node.manager is not true
   tags: swarm
-  
