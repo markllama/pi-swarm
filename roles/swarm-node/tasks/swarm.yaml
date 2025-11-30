@@ -40,7 +40,7 @@
       run_once: true
       tags: swarm
     
-    - name: Set node label
+    - name: Set node label for manager
       docker_node:
         hostname: "{{ ansible_hostname }}"
         labels:
@@ -57,7 +57,7 @@
         join_token: "{{ swarm_status.swarm_facts.JoinTokens.Manager }}"
       run_once: true
       tags: swarm
-  
+
   when: swarm_node.manager is defined and swarm_node.manager is true
   tags: swarm
 
@@ -67,5 +67,18 @@
     advertise_addr: "{{ swarm_advertise_addr }}"    
     remote_addrs  : "{{ swarm_advertise_addr }}"
     join_token: "{{ swarm_status.swarm_facts.JoinTokens.Worker }}"
-  when: swarm_node.manager is not defined or swarm_node.manager is not true
   tags: swarm
+
+- name: Label worker nodes
+  docker_node:
+    hostname: "{{ item }}"
+    labels:
+      num: "worker{{ index }}"
+    labels_state: merge
+  loop: "{{ swarm.workers }}"
+  loop_control:
+    index_var: index
+  run_once: true
+  when: swarm_node.manager is defined and swarm_node.manager is true
+  tags: swarm
+    

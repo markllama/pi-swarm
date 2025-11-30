@@ -30,6 +30,15 @@
 #     src: netplan-template.j2
 #     dest: /etc/netplan/00-front.yaml
 
+- name: Disable cloud-init
+  copy:
+    dest: /etc/cloud/cloud-init.disabled
+    content: ""
+    owner: root
+    group: root
+    state: touch
+  tags: network
+
 - name: Disable cloud-init network configuration
   copy:
     dest: /etc/cloud/cloud.cfg.d/99-disable-network-config.cfg
@@ -38,7 +47,23 @@
   notify: Apply Netplan
   tags: network
 
-- name: Remove cloudflare netplan file
+- name: Remove cloud-init netplan file
   file:
     path: /etc/netplan/50-cloud-init.yaml
     state: absent
+  tags: network
+
+- name: disable etc_hosts management
+  lineinfile:
+    path: /etc/cloud/cloud.cfg
+    regexp: '^\s+- update_etc_hosts'
+    state: absent
+  tags: network
+
+
+- name: Write etc/hosts with all nodes
+  lineinfile:
+    dest: /etc/hosts
+    line: "{{ item.addr }} {{ item.name }}"
+  loop: "{{ swarm.ip_map.back }}"
+  tags: hosts

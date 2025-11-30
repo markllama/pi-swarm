@@ -5,6 +5,26 @@ swarm:
     - pi5-2
     - pi5-3
     - pi5-4
+  # TODO: derive these in template jinja code - MAL 20251130
+  ip_map:
+    front:
+      - addr: "172.17.0.11"
+        name: pi5-1
+      - addr: "172.17.0.12"
+        name: pi5-2
+      - addr: "172.17.0.13"
+        name: pi5-3
+      - addr: "172.17.0.14"
+        name: pi5-4      
+    back:
+      - addr: "172.16.0.11"
+        name: pi5-1
+      - addr: "172.16.0.12"
+        name: pi5-2
+      - addr: "172.16.0.13"
+        name: pi5-3
+      - addr: "172.16.0.14"
+        name: pi5-4
   networks:
     front:
       optional: "false"

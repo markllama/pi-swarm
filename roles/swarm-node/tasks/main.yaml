@@ -26,4 +26,49 @@
   import_tasks:
     file: swarm.yaml
   tags: swarm
-    
+
+# - name: Create host entries for each node
+#   copy:
+#     dest: /var/tmp/hostvars.yaml
+#     msg: |
+#       {{ groups['swarm_nodes'] | difference('localhost') }}
+# #      {{ hostvars['pi5-1'] }}
+#  tags: hosts
+#  when: swarm_node.manager is defined and swarm_node.manager is true
+#  run_once: true
+
+# - name: Collect the data to a single fact
+#   set_fact:
+#     # so far just the list of hosts in swarm_nodes
+#     some_collected_stats: >-
+#       {{
+#         some_collected_stats
+#         | default({})
+#         | combine({
+#             item: {
+#               "interface": "ansible_" ~ hostvars[item].swarm_node.networks.back.name,
+#               "rest": hostvars[item]
+              
+#             }
+#                   })
+#       }}
+#   loop: "{{ groups.swarm_nodes }}"
+#   tags: hosts
+
+# - name: Dump the collected data to a file
+#   copy:
+#     dest: uptime_stats.json
+#     content: "{{ some_collected_stats | to_nice_json }}"
+#   tags: hosts
+
+# For each node in the group:
+#   the key is the node name
+#   IP address is the IP of the back end network
+#   find the interface name for the back network
+#   find the IP address for that interface
+#
+#  hostvars[item].swarm_node.networks.back.name
+#
+#
+#
+#
